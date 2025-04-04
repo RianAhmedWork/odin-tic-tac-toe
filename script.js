@@ -10,12 +10,14 @@ const gameboard = (function () {
   const getCell = (position) => board[position];
   // function to clear the board
   const clearBoard = () => {
-    board.forEach((_,index, array) => {
-        array[index] = "";
+    board.forEach((_, index, array) => {
+      array[index] = "";
     });
   };
+  // function to get the whole board
+  const getBoard = () => board + "";
 
-  return { setCell, getCell, clearBoard };
+  return { setCell, getCell, clearBoard, getBoard };
 })();
 
 // player object
@@ -42,101 +44,116 @@ function gameflow(name1, name2) {
   const player1 = createPlayer(name1, markX);
   const player2 = createPlayer(name2, markO);
 
-  let rounds = 0;
+  // play the game till a winner is decided
+  function playGame() {
+    // number of rounds in a game
+    let rounds = 0;
+    // play the game until all rounds or a winner is decided
+    while (rounds < 9) {
+      // ask player 1 for their choice
+      let player1Choice = parseInt(
+        prompt(player1.playerName + " please chose a position")
+      );
+      while (player1Choice === NaN || player1Choice > 8 || player1Choice < 0 || gameboard.getCell(player1Choice) !== "") {
+        player1Choice = parseInt(
+          prompt(player1.playerName + ", please enter a number from 0 to 8")
+        );
+      }
+      // set the choice of player 1 and check if there is a win
+      gameboard.setCell(player1Choice, markX);
+      if (checkWinCondition() === markX) {
+        console.log(player1.playerName + " Has Won!");
+        break;
+      }
+      // increase the round and end the game if round limit is reached
+      rounds++;
+      if (rounds === 9) {
+        break;
+      }
 
-  while (rounds < 9) {
-      // win conditions
-  if (
-    (
-      gameboard.getCell(0) === markX &&
-      gameboard.getCell(1) === markX &&
-      gameboard.getCell(2) === markX
-    ) || (
-      gameboard.getCell(0) === markX &&
+      // ask player 2 for their choice
+      let player2Choice = parseInt(
+        prompt(player2.playerName + " please choose a position")
+      );
+      while (player2Choice === NaN || player2Choice > 8 || player2Choice < 0 || gameboard.getCell(player2Choice) !== "") {
+        player2Choice = parseInt(
+          prompt(player2.playerName + ", please enter a number from 0 to 8")
+        );
+      }
+      // set the choice of the player 2 and check if there is a win
+      gameboard.setCell(player2Choice, markO);
+      if (checkWinCondition() === markO) {
+        console.log(player2.playerName + " Has Won!");
+        break;
+      }
+      // increase the round
+      rounds++;
+    }
+
+    // if all rounds are played then and there is no winner the game is a draw
+    if (rounds === 9) {
+      console.log("It is a draw between " + player1.playerName + " and " + player2.playerName);
+    }
+  }
+
+  // function to check if a player has won
+  function checkWinCondition() {
+    if (
+      (gameboard.getCell(0) === markX &&
+        gameboard.getCell(1) === markX &&
+        gameboard.getCell(2) === markX) ||
+      (gameboard.getCell(0) === markX &&
         gameboard.getCell(3) === markX &&
-        gameboard.getCell(6) === markX
-    ) || (
-      gameboard.getCell(6) === markX &&
+        gameboard.getCell(6) === markX) ||
+      (gameboard.getCell(6) === markX &&
         gameboard.getCell(7) === markX &&
-        gameboard.getCell(8) === markX
-    ) || (
-      gameboard.getCell(8) === markX &&
+        gameboard.getCell(8) === markX) ||
+      (gameboard.getCell(8) === markX &&
         gameboard.getCell(5) === markX &&
-        gameboard.getCell(2) === markX
-    ) || (
-      gameboard.getCell(0) === markX &&
+        gameboard.getCell(2) === markX) ||
+      (gameboard.getCell(0) === markX &&
         gameboard.getCell(4) === markX &&
-        gameboard.getCell(8) === markX
-    ) || (
-      gameboard.getCell(2) === markX &&
+        gameboard.getCell(8) === markX) ||
+      (gameboard.getCell(2) === markX &&
         gameboard.getCell(4) === markX &&
-        gameboard.getCell(6) === markX
-    ) || (
-      gameboard.getCell(1) === markX &&
+        gameboard.getCell(6) === markX) ||
+      (gameboard.getCell(1) === markX &&
         gameboard.getCell(4) === markX &&
-        gameboard.getCell(7) === markX
-    ) || (
-      gameboard.getCell(3) === markX &&
+        gameboard.getCell(7) === markX) ||
+      (gameboard.getCell(3) === markX &&
         gameboard.getCell(4) === markX &&
-        gameboard.getCell(5) === markX
-    )
-  ) {
-    console.log(player1.name + " Wins!");
-    break;
-  } else if (
-    (
-        gameboard.getCell(0) === markO &&
+        gameboard.getCell(5) === markX)
+    ) {
+      return "X";
+    } else if (
+      (gameboard.getCell(0) === markO &&
         gameboard.getCell(1) === markO &&
-        gameboard.getCell(2) === markO
-      ) || (
-        gameboard.getCell(0) === markO &&
-          gameboard.getCell(3) === markO &&
-          gameboard.getCell(6) === markO
-      ) || (
-        gameboard.getCell(6) === markO &&
-          gameboard.getCell(7) === markO &&
-          gameboard.getCell(8) === markO
-      ) || (
-        gameboard.getCell(8) === markO &&
-          gameboard.getCell(5) === markO &&
-          gameboard.getCell(2) === markO
-      ) || (
-        gameboard.getCell(0) === markO &&
-          gameboard.getCell(4) === markO &&
-          gameboard.getCell(8) === markO
-      ) || (
-        gameboard.getCell(2) === markO &&
-          gameboard.getCell(4) === markO &&
-          gameboard.getCell(6) === markO
-      ) || (
-        gameboard.getCell(1) === markO &&
-          gameboard.getCell(4) === markO &&
-          gameboard.getCell(7) === markO
-      ) || (
+        gameboard.getCell(2) === markO) ||
+      (gameboard.getCell(0) === markO &&
         gameboard.getCell(3) === markO &&
-          gameboard.getCell(4) === markO &&
-          gameboard.getCell(5) === markO
-      )
-  ) {
-    console.log(player2.name + " Wins!");
-    break;
+        gameboard.getCell(6) === markO) ||
+      (gameboard.getCell(6) === markO &&
+        gameboard.getCell(7) === markO &&
+        gameboard.getCell(8) === markO) ||
+      (gameboard.getCell(8) === markO &&
+        gameboard.getCell(5) === markO &&
+        gameboard.getCell(2) === markO) ||
+      (gameboard.getCell(0) === markO &&
+        gameboard.getCell(4) === markO &&
+        gameboard.getCell(8) === markO) ||
+      (gameboard.getCell(2) === markO &&
+        gameboard.getCell(4) === markO &&
+        gameboard.getCell(6) === markO) ||
+      (gameboard.getCell(1) === markO &&
+        gameboard.getCell(4) === markO &&
+        gameboard.getCell(7) === markO) ||
+      (gameboard.getCell(3) === markO &&
+        gameboard.getCell(4) === markO &&
+        gameboard.getCell(5) === markO)
+    ) {
+      return "O";
+    }
   }
-  let player1Choice;
-  do {
-        let player1Choice = prompt(player1.playerName + " Please choose a position");
-        gameboard.setCell(parseInt(player1Choice), markX);
-    } while (parseInt(player1Choice) < 0 || parseInt(player1Choice) > 8 || parseInt(player1Choice) === NaN);
 
-    let player2Choice;
-    do {
-        let player2Choice = prompt(player2.playerName + " Please choose a position");
-        gameboard.setCell(parseInt(player2Choice), markO);
-    } while (parseInt(player2Choice) < 0 || parseInt(player2Choice) > 8 || parseInt(player2Choice) === NaN);
-    
-    // increment the round at the end of each round
-    rounds++;
-  }
-  if (rounds = 9) {
-    console.log ("It's a draw.");
-  }
+  return { playGame };
 }
