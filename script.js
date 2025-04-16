@@ -61,6 +61,7 @@ function gameflow(name1, name2) {
       }
       // set the choice of player 1 and check if there is a win
       gameboard.setCell(player1Choice, markX);
+      displayGame.setSpot(player1Choice, markX);
       if (checkWinCondition() === markX) {
         console.log(player1.playerName + " Has Won!");
         break;
@@ -82,6 +83,7 @@ function gameflow(name1, name2) {
       }
       // set the choice of the player 2 and check if there is a win
       gameboard.setCell(player2Choice, markO);
+      displayGame.setSpot(player2Choice, markO);
       if (checkWinCondition() === markO) {
         console.log(player2.playerName + " Has Won!");
         break;
@@ -157,3 +159,24 @@ function gameflow(name1, name2) {
 
   return { playGame };
 }
+
+// display logic/dom object
+const displayGame = (function() {
+  const spots = document.querySelectorAll(".game-button");
+
+  // sets the content of the grid and makes it unclickable
+  function setSpot(playerChoice, marker) {
+    spots[playerChoice].textContent = marker+"";
+    spots[playerChoice].setAttribute("disabled", true);
+  }
+
+  // clear the dom grid and sets the buttons to be clickable
+  function clearBoard() {
+    spots.forEach((_, index, array) => {
+      array[index].textContent = "";
+      array[index].removeAttribute("disabled");
+    });
+  }
+
+  return { setSpot, clearBoard }
+})();
