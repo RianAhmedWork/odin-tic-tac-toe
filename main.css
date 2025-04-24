@@ -1,41 +1,101 @@
 body {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid red;
-    margin: 0;
-    padding: 0;
-    align-items: center;
-    height: 100vh;
-    align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  height: 100vh;
+  align-items: stretch;
+  color: wheat;
 }
 
-#header, #footer {
-    display: flex;
-    flex: 1 1 0;
-    border: blue 5px solid;
-    justify-content: center;
+#header,
+#footer {
+  display: flex;
+  flex: 1 1 0;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: #222222;
 }
 
 #body {
-    display: flex;
-    flex: 8 1 0;
-    border: solid red 5px;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  flex: 8 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #111111;
 }
 
 #game-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(64px, 1fr));
-    grid-template-rows: repeat(3, minmax(64px, 1fr));
-    gap: 2px;
-    background-color: black;
-    padding: 2px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(64px, 1fr));
+  grid-template-rows: repeat(3, minmax(64px, 1fr));
+  gap: 2px;
+  background-color: white;
+  padding: 2px;
+}
+
+#name-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#name-dialog::backdrop {
+  background-color: black;
+  opacity: 0.5;
+}
+
+#endgame-dialog {
+  width: 300px;
+  height: 100px;
+}
+
+#game-result-text {
+  font-size: 32px;
+}
+
+#endgame-dialog > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+#endgame-dialog > div > * {
+  flex: 1 1 0;
+}
+
+dialog {
+  background-color: #333333;
+  color: wheat;
+}
+
+input {
+  color: wheat;
+  background-color: #222222;
+}
+
+#restart-button,
+#submit-button {
+  color: wheat;
+  background-color: #111111;
 }
 
 .game-button {
-    width: 128px;
-    height: 128px;
-    font-size: 64px;
-    color: black;
+  all: unset;
+  text-align: center;
+  width: 128px;
+  height: 128px;
+  font-size: 64px;
+  color: white;
+  background-color: #222222;
+}
+
+.game-button:active {
+  background: #111111;
 }

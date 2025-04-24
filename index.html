@@ -1,16 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="main.css">
 </head>
+
 <body>
     <script src="script.js" defer></script>
-    <div id="header"><h1>Tic Tac Toe</h1></div>
+    <div id="header">
+        <h1>Tic Tac Toe</h1>
+    </div>
     <div id="body">
-        <div id="player-turn"></div>
+        <dialog id="endgame-dialog">
+            <div>
+            <div id="game-result-text">
+            </div>
+            <button id="restart-button">Click me to restart</button>
+            </div>
+        </dialog>
+        <dialog id="name-dialog">
+            <div id="name-dialog-content">
+                <div>
+                    <p>Player One Name:</p>
+                    <input type="text" id="player-one-name" placeholder="Player One">
+                </div>
+                <div>
+                    <p>Player Two Name:</p>
+                    <input type="text" id="player-two-name" placeholder="Player Two">
+                </div>
+                <button id="submit-button">Submit</button>
+            </div>
+        </dialog>
+        <div id="game-text">Game Will Start Soon</div>
         <div id="game-grid">
             <button class="game-button" data-spot="0"></button>
             <button class="game-button" data-spot="1"></button>
@@ -24,8 +48,9 @@
         </div>
     </div>
     <div id="footer">
-        <a href="">Rian Ahmed</a>
-        <a href="">Source Code</a>
+        <a href="https://github.com/RianAhmedWork">Rian Ahmed</a>
+        <a href="https://github.com/RianAhmedWork/odin-tic-tac-toe">Source Code</a>
     </div>
 </body>
+
 </html>

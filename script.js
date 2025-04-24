@@ -44,57 +44,42 @@ function gameflow(name1, name2) {
   const player1 = createPlayer(name1, markX);
   const player2 = createPlayer(name2, markO);
 
+  // initialize the number of rounds
+  let rounds = 0;
+
+  function nextRound() {
+    rounds++;
+  }
+
+  function returnRounds() {
+    return rounds;
+  }
+
+  function resetRounds() {
+    rounds = 0;
+  }
+
+  function startGame() {
+    displayGame.setSpot(this);
+  }
+
   // play the game till a winner is decided
   function playGame() {
-    // number of rounds in a game
-    let rounds = 0;
     // play the game until all rounds or a winner is decided
-    while (rounds < 9) {
-      // ask player 1 for their choice
-      let player1Choice = parseInt(
-        prompt(player1.playerName + " please chose a position")
-      );
-      while (player1Choice === NaN || player1Choice > 8 || player1Choice < 0 || gameboard.getCell(player1Choice) !== "") {
-        player1Choice = parseInt(
-          prompt(player1.playerName + ", please enter a number from 0 to 8")
-        );
-      }
-      // set the choice of player 1 and check if there is a win
-      gameboard.setCell(player1Choice, markX);
-      displayGame.setSpot(player1Choice, markX);
-      if (checkWinCondition() === markX) {
-        console.log(player1.playerName + " Has Won!");
-        break;
-      }
-      // increase the round and end the game if round limit is reached
-      rounds++;
-      if (rounds === 9) {
-        break;
-      }
-
-      // ask player 2 for their choice
-      let player2Choice = parseInt(
-        prompt(player2.playerName + " please choose a position")
-      );
-      while (player2Choice === NaN || player2Choice > 8 || player2Choice < 0 || gameboard.getCell(player2Choice) !== "") {
-        player2Choice = parseInt(
-          prompt(player2.playerName + ", please enter a number from 0 to 8")
-        );
-      }
-      // set the choice of the player 2 and check if there is a win
-      gameboard.setCell(player2Choice, markO);
-      displayGame.setSpot(player2Choice, markO);
-      if (checkWinCondition() === markO) {
-        console.log(player2.playerName + " Has Won!");
-        break;
-      }
-      // increase the round
-      rounds++;
+    if (rounds % 2 === 0) {
+      displayGame.showGameText(player1.playerName, 0);
+    } else if (rounds % 2 === 1) {
+      displayGame.showGameText(player2.playerName, 0);
     }
-
-    // if all rounds are played then and there is no winner the game is a draw
-    if (rounds === 9) {
-      console.log("It is a draw between " + player1.playerName + " and " + player2.playerName);
+    if (checkWinCondition() === markX) {
+      displayGame.disableSpots();
+      displayGame.showGameText(player1.playerName, 1);
+    } else if (checkWinCondition() === markO) {
+      displayGame.disableSpots();
+      displayGame.showGameText(player2.playerName, 1);
+    } else if (rounds === 9) {
+      displayGame.disableSpots();
+      displayGame.showGameText(player1.playerName, 2);
     }
   }
 
@@ -157,26 +142,98 @@ function gameflow(name1, name2) {
     }
   }
 
-  return { playGame };
+  return { playGame, nextRound, startGame, rounds, returnRounds, resetRounds };
 }
 
 // display logic/dom object
-const displayGame = (function() {
+const displayGame = (function () {
   const spots = document.querySelectorAll(".game-button");
+  const nameDialog = document.getElementById("name-dialog");
+  const submitButton = document.getElementById("submit-button");
+  const playerOneName = document.getElementById("player-one-name");
+  const playerTwoName = document.getElementById("player-two-name");
+  const endDialog = document.getElementById("endgame-dialog");
+  const gameResult = document.getElementById("game-result-text");
+  const restartButton = document.getElementById("restart-button");
+
+  restartButton.addEventListener("click", function () {
+    location.reload();
+  });
+
+  submitButton.addEventListener("click", function () {
+    if (playerOneName.value === "" || playerTwoName.value === "") {
+      alert("please fill in both the boxes");
+    } else if (playerOneName.value === playerTwoName.value) {
+      alert("both players cannot have the same name");
+    } else {
+      nameDialog.remove();
+      const newGame = gameflow(playerOneName.value, playerTwoName.value);
+      newGame.startGame();
+      newGame.playGame();
+    }
+  });
+
+  function showNameDialog() {
+    nameDialog.showModal();
+  }
+
+  function showEndDialog() {
+    endDialog.showModal();
+  }
 
   // sets the content of the grid and makes it unclickable
-  function setSpot(playerChoice, marker) {
-    spots[playerChoice].textContent = marker+"";
-    spots[playerChoice].setAttribute("disabled", true);
+  function setSpot(game) {
+    spots.forEach((spot, index) => {
+      spot.addEventListener("click", function () {
+        if (game.returnRounds() % 2 === 0) {
+          spot.textContent = "X";
+          gameboard.setCell(index, "X");
+          game.nextRound();
+          game.playGame();
+        } else if (game.returnRounds() % 2 === 1) {
+          spot.textContent = "O";
+          gameboard.setCell(index, "O");
+          game.nextRound();
+          game.playGame();
+        }
+        spot.setAttribute("disabled", true);
+      });
+    });
   }
 
   // clear the dom grid and sets the buttons to be clickable
   function clearBoard() {
-    spots.forEach((_, index, array) => {
-      array[index].textContent = "";
-      array[index].removeAttribute("disabled");
+    spots.forEach((spot) => {
+      spot.textContent = "";
+      spot.removeAttribute("disabled");
+    });
+    gameboard.clearBoard();
+  }
+
+  // show who's turn it is or the winner of the game
+  function showGameText(playerName, num) {
+    const gameText = document.getElementById("game-text");
+    if (num === 0) {
+      gameText.textContent = playerName + "'s turn";
+    } else if (num === 1) {
+      gameResult.textContent = playerName + " has won";
+      showEndDialog();
+      gameText.textContent = playerName + " has won";
+    } else if (num === 2) {
+      gameResult.textContent = "It is a draw";
+      showEndDialog();
+      gameText.textContent = "It is a draw";
+    }
+  }
+
+  // disable all buttons from being clickable
+  function disableSpots() {
+    spots.forEach((spot) => {
+      spot.setAttribute("disabled", true);
     });
   }
 
-  return { setSpot, clearBoard }
+  return { setSpot, clearBoard, showGameText, disableSpots, showNameDialog };
 })();
+
+displayGame.showNameDialog();
