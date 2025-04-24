@@ -99,3 +99,11 @@ input {
 .game-button:active {
   background: #111111;
 }
+
+a {
+  color: greenyellow;
+}
+
+a:visited {
+  color: green;
+}
